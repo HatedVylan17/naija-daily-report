@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Naija Daily Report</title>
+    <style>
+        :root {
+            --bg: #eef4f8;
+            --paper: #ffffff;
+            --paper-soft: #f7fafc;
+            --ink: #14213d;
+            --muted: #52606d;
+            --brand: #0f4c5c;
+            --brand-2: #1f7a8c;
+            --accent: #e36414;
+            --gold: #f2cc8f;
+            --line: #d9e2ec;
+            --shadow: 0 18px 40px rgba(20, 33, 61, 0.12);
+            --radius: 22px;
+            --max: 1180px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Georgia, "Times New Roman", serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at top left, #dff3ff 0, transparent 28%),
+                radial-gradient(circle at top right, #fff0d9 0, transparent 24%),
+                linear-gradient(180deg, #edf5f9 0%, #f7fafc 100%);
+        }
+
+        img {
+            display: block;
+            width: 100%;
+            border-radius: 18px;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .shell {
+            width: min(100% - 24px, var(--max));
+            margin: 0 auto;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+            background: rgba(238, 244, 248, 0.88);
+            border-bottom: 1px solid rgba(217, 226, 236, 0.85);
+        }
+
+        .masthead {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 18px 0 14px;
+        }
+
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+        }
+
+        .logo-mark {
+            width: 72px;
+            height: 72px;
+            flex: 0 0 72px;
+            border-radius: 24px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #7c2d12, #ea580c 55%, #facc15);
+            color: white;
+            box-shadow: 0 14px 30px rgba(234, 88, 12, 0.28);
+            border: 3px solid rgba(255, 255, 255, 0.72);
+            font-size: 2.2rem;
+            font-weight: 700;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-mark::before {
+            content: "";
+            position: absolute;
+            inset: 6px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+        }
+
+        .logo-text h1 {
+            margin: 0;
+            font-size: clamp(1.5rem, 3vw, 2.6rem);
+            line-height: 1;
+            letter-spacing: 0.02em;
+            color: #0f172a;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+        }
+
+        .logo-text p {
+            margin: 4px 0 0;
+            color: #9a3412;
+            font-size: 0.98rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .date-chip {
+            padding: 12px 16px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #fff7e7, #f2cc8f);
+            color: #6b3e17;
+            box-shadow: var(--shadow);
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 0 0 18px;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 18px;
+            border-radius: 999px;
+            color: #fff;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            box-shadow: 0 12px 28px rgba(20, 33, 61, 0.14);
+            transform: translateY(0);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+        }
+
+        .nav-btn:hover,
+        .nav-btn:focus-visible,
+        .nav-btn.active,
+        .card:hover,
+        .story:hover,
+        .feature:hover,
+        .section-shell:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 18px 34px rgba(20, 33, 61, 0.18);
+            filter: saturate(1.04);
+        }
+
+        .nav-btn.active {
+            outline: 3px solid rgba(255, 255, 255, 0.45);
+            outline-offset: 2px;
+        }
+
+        .btn-home,
+        .btn-politics,
+        .btn-sports,
+        .btn-entertainment,
+        .btn-technology,
+        .btn-contact {
+            background: linear-gradient(135deg, #7c2d12, #c2410c);
+        }
+
+        main {
+            padding: 28px 0 56px;
+        }
+
+        .page-section {
+            display: none;
+        }
+
+        .page-section.is-active {
+            display: block;
+            animation: fadeIn 0.28s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 22px;
+            margin-bottom: 26px;
+        }
+
+        .feature,
+        .section-shell,
+        .card,
+        .story,
+        .contact-box {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+        }
+
+        .feature {
+            overflow: hidden;
+        }
+
+        .feature-copy {
+            padding: 24px;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: #d7eef5;
+            color: var(--brand);
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .feature h2 {
+            margin: 14px 0 12px;
+            font-size: clamp(1.8rem, 3vw, 3rem);
+            line-height: 1.05;
+        }
+
+        .feature p,
+        .card p,
+        .story p,
+        .bullet-panel li,
+        .contact-box p,
+        .article-body p {
+            color: var(--muted);
+            font-size: 1rem;
+            line-height: 1.65;
+        }
+
+        .cta {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 12px 18px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--accent), #ff9f68);
+            color: #fff;
+            font-weight: 700;
+            box-shadow: 0 12px 24px rgba(227, 100, 20, 0.24);
+        }
+
+        .side-stack {
+            display: grid;
+            gap: 18px;
+        }
+
+        .bullet-panel {
+            padding: 20px;
+            background: linear-gradient(180deg, #ffffff, #f9fbfc);
+        }
+
+        .bullet-panel h3,
+        .section-head h2,
+        .article-head h2 {
+            margin: 0 0 14px;
+            font-size: 1.35rem;
+        }
+
+        .bullet-panel ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .bullet-panel li + li {
+            margin-top: 10px;
+        }
+
+        .section-shell {
+            padding: 24px;
+            margin-bottom: 26px;
+        }
+
+        .section-head {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .section-head p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            overflow: hidden;
+        }
+
+        .card-copy {
+            padding: 18px;
+        }
+
+        .card h3,
+        .story h3 {
+            margin: 0 0 10px;
+            font-size: 1.18rem;
+            line-height: 1.28;
+        }
+
+        .story-list {
+            display: grid;
+            gap: 18px;
+        }
+
+        .story {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 18px;
+            padding: 16px;
+        }
+
+        .story img {
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .article-layout {
+            display: grid;
+            grid-template-columns: 1.4fr 0.8fr;
+            gap: 22px;
+        }
+
+        .article-head p {
+            margin: 0 0 14px;
+            color: var(--muted);
+        }
+
+        .article-body,
+        .comment-box,
+        .contact-box {
+            padding: 22px;
+        }
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .meta span {
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: #eef6f8;
+            color: var(--brand);
+            font-size: 0.9rem;
+        }
+
+        form {
+            display: grid;
+            gap: 14px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 16px;
+            font: inherit;
+            color: var(--ink);
+            background: #fff;
+        }
+
+        textarea {
+            min-height: 160px;
+            resize: vertical;
+        }
+
+        button {
+            border: 0;
+            padding: 14px 20px;
+            border-radius: 999px;
+            font: inherit;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, var(--brand), var(--brand-2));
+            box-shadow: 0 12px 24px rgba(15, 76, 92, 0.22);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        button:hover,
+        button:focus-visible {
+            transform: translateY(-3px);
+            box-shadow: 0 18px 30px rgba(15, 76, 92, 0.25);
+        }
+
+        footer {
+            padding: 0 0 40px;
+        }
+
+        .footer-box {
+            background: linear-gradient(135deg, #102a43, #0f4c5c);
+            color: #fff;
+            border-radius: 26px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .footer-box p {
+            margin: 0;
+        }
+
+        .footer-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 14px;
+        }
+
+        .footer-nav a {
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        @media (max-width: 980px) {
+            .hero-grid,
+            .article-layout,
+            .cards {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .article-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .story {
+                grid-template-columns: 1fr;
+            }
+
+            .story img {
+                max-height: 280px;
+            }
+
+            .date-chip {
+                display: none;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .shell {
+                width: min(100% - 16px, var(--max));
+            }
+
+            .masthead {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            nav {
+                gap: 8px;
+            }
+
+            .nav-btn {
+                width: calc(50% - 4px);
+                padding: 11px 14px;
+                font-size: 0.95rem;
+            }
+
+            .hero-grid,
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .section-shell,
+            .feature-copy,
+            .bullet-panel,
+            .card-copy,
+            .article-body,
+            .comment-box,
+            .contact-box {
+                padding: 18px;
+            }
+
+            .feature h2 {
+                font-size: 1.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                background:
+                    linear-gradient(180deg, #f4f8fb 0%, #eef4f8 100%);
+            }
+
+            .logo-mark {
+                width: 60px;
+                height: 60px;
+                flex-basis: 60px;
+                font-size: 1.9rem;
+            }
+
+            .logo-text h1 {
+                font-size: 1.45rem;
+            }
+
+            .nav-btn {
+                width: 100%;
+            }
+
+            .feature h2 {
+                font-size: 1.55rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="shell">
+            <div class="masthead">
+                <div class="logo-wrap">
+                    <div class="logo-mark">N</div>
+                    <div class="logo-text">
+                        <h1>Naija Daily Report</h1>
+                        <p>Sharp Nigerian stories for politics, sport, culture, and technology.</p>
+                    </div>
+                </div>
+                <div class="date-chip">Wednesday, April 8, 2026</div>
+            </div>
+
+            <nav>
+                <a class="nav-btn btn-home" href="#home" data-page-link="home">Home</a>
+                <a class="nav-btn btn-politics" href="#politics" data-page-link="politics">Politics</a>
+                <a class="nav-btn btn-sports" href="#sports" data-page-link="sports">Sports</a>
+                <a class="nav-btn btn-entertainment" href="#entertainment" data-page-link="entertainment">Entertainment</a>
+                <a class="nav-btn btn-technology" href="#technology" data-page-link="technology">Technology</a>
+                <a class="nav-btn btn-contact" href="#contact" data-page-link="contact">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="shell">
+        <div class="page-section is-active" id="page-home" data-page="home">
+        <section class="hero-grid">
+            <article class="feature">
+                <img src="images/home.jpg" alt="Lagos skyline">
+                <div class="feature-copy">
+                    <span class="eyebrow">Breaking News</span>
+                    <h2>Lagos transport expansion returns to the center of national urban planning talks</h2>
+                    <p>As population pressure rises, policymakers, commuters, and business owners are paying closer attention to rail growth, road upgrades, and how mobility shapes the future of Nigeria's commercial capital.</p>
+                    <a class="cta" href="#full-article" data-page-link="full-article">Read Full Report</a>
+                </div>
+            </article>
+
+            <div class="side-stack">
+                <aside class="bullet-panel card">
+                    <h3>Trending News</h3>
+                    <ul>
+                        <li><a href="#politics">National Assembly priorities draw fresh public attention</a></li>
+                        <li><a href="#sports">Grassroots football keeps producing new talent</a></li>
+                        <li><a href="#entertainment">Nollywood crews continue expanding local production</a></li>
+                        <li><a href="#technology">Computer Village reflects Nigeria's digital economy</a></li>
+                        <li><a href="#contact">Send us your feedback and school presentation ideas</a></li>
+                    </ul>
+                </aside>
+
+                <aside class="bullet-panel card">
+                    <h3>Latest News</h3>
+                    <ul>
+                        <li>Abuja policy circles remain focused on public services and infrastructure.</li>
+                        <li>Lagos transport debates continue to dominate urban development talk.</li>
+                        <li>Sports venues in Lagos and Uyo remain important national landmarks.</li>
+                        <li>Creative and tech sectors keep attracting younger Nigerians.</li>
+                    </ul>
+                </aside>
+            </div>
+        </section>
+
+        <section class="section-shell">
+            <div class="section-head">
+                <div>
+                    <h2>Front Page Highlights</h2>
+                    <p>Quick access to the biggest stories shaping Nigeria today.</p>
+                </div>
+            </div>
+            <div class="cards">
+                <article class="card">
+                    <img src="images/politics-main.jpg" alt="National Assembly building">
+                    <div class="card-copy">
+                        <h3>Politics in Focus</h3>
+                        <p>Legislative decisions in Abuja continue to shape the national conversation around development, infrastructure, and spending.</p>
+                        <a class="cta" href="#politics" data-page-link="politics">Open Politics</a>
+                    </div>
+                </article>
+                <article class="card">
+                    <img src="images/sports-main.jpg" alt="Grassroots football in Nigeria">
+                    <div class="card-copy">
+                        <h3>Sports Across Nigeria</h3>
+                        <p>From local football grounds to modern stadiums, sport remains one of the strongest sources of public excitement.</p>
+                        <a class="cta" href="#sports" data-page-link="sports">Open Sports</a>
+                    </div>
+                </article>
+                <article class="card">
+                    <img src="images/tech-main.jpg" alt="Computer Village Lagos">
+                    <div class="card-copy">
+                        <h3>Technology Watch</h3>
+                        <p>Nigeria's device markets and innovation hubs continue to show how digital life is expanding every day.</p>
+                        <a class="cta" href="#technology" data-page-link="technology">Open Technology</a>
+                    </div>
+                </article>
+            </div>
+        </section>
+        </div>
+
+        <section class="section-shell page-section" id="politics" data-page="politics">
+            <div class="section-head">
+                <div>
+                    <h2>Politics</h2>
+                    <p>Public policy, national institutions, and the changing priorities of governance.</p>
+                </div>
+            </div>
+            <div class="story-list">
+                <article class="story">
+                    <img src="images/politics-main.jpg" alt="The National Assembly building in Abuja">
+                    <div>
+                        <h3>National Assembly reviews development priorities across transport, power, education, and healthcare</h3>
+                        <p>Debates in Abuja continue to focus on where public investment can produce the strongest long-term gains for citizens and businesses.</p>
+                    </div>
+                </article>
+                <article class="story">
+                    <img src="images/politics-2.jpg" alt="National Mosque Abuja">
+                    <div>
+                        <h3>Abuja remains a strong symbol of national dialogue, civic identity, and public institutions</h3>
+                        <p>Landmarks in the federal capital continue to reflect the country's diversity while hosting conversations about growth, inclusion, and service delivery.</p>
+                    </div>
+                </article>
+                <article class="story">
+                    <img src="images/politics-3.jpg" alt="Lagos city scene">
+                    <div>
+                        <h3>Lagos growth adds new urgency to national discussions on planning, housing, and urban policy</h3>
+                        <p>Experts say city expansion is forcing fresh thinking around transport systems, environmental management, and access to services.</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="section-shell page-section" id="sports" data-page="sports">
+            <div class="section-head">
+                <div>
+                    <h2>Sports</h2>
+                    <p>Football, stadium culture, and the energy that keeps fans engaged nationwide.</p>
+                </div>
+            </div>
+            <div class="story-list">
+                <article class="story">
+                    <img src="images/sports-main.jpg" alt="Grassroots football">
+                    <div>
+                        <h3>Grassroots football continues to inspire young Nigerians and strengthen local community sport</h3>
+                        <p>Coaches and supporters say local football still offers one of the clearest pathways for discipline, visibility, and future opportunity.</p>
+                    </div>
+                </article>
+                <article class="story">
+                    <img src="images/sports-2.jpg" alt="National Stadium Lagos">
+                    <div>
+                        <h3>National Stadium Lagos remains a major symbol of Nigeria's sporting history</h3>
+                        <p>Fans continue calling for improved maintenance, modern programming, and stronger use of iconic venues throughout the year.</p>
+                    </div>
+                </article>
+                <article class="story">
+                    <img src="images/sports-3.jpg" alt="Godswill Akpabio International Stadium">
+                    <div>
+                        <h3>Modern stadium investments raise expectations for future competitions and better fan experiences</h3>
+                        <p>Facilities like the stadium in Uyo continue to shape public discussion around readiness for larger events and stronger matchday environments.</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="section-shell page-section" id="entertainment" data-page="entertainment">
+            <div class="section-head">
+                <div>
+                    <h2>Entertainment</h2>
+                    <p>Nollywood, media work, and the growing strength of Nigeria's creative economy.</p>
+                </div>
+            </div>
+            <div class="story-list">
+                <article class="story">
+                    <img src="images/ent-main.jpg" alt="Nollywood film set">
+                    <div>
+                        <h3>Nollywood sets continue to reflect the scale, ambition, and creativity of Nigerian storytelling</h3>
+                        <p>Production teams across the country are proving that strong local stories and practical filmmaking can keep audiences engaged.</p>
+                    </div>
+                </article>
+                <article class="story">
+                    <img src="images/home.jpg" alt="Lagos skyline for creative economy">
+                    <div>
+                        <h3>Lagos remains central to premieres, media events, and creative business activity</h3>
+                        <p>Industry professionals say the city's pace and network effects make it one of the most important homes for entertainment business in Nigeria.</p>
+                    </div>
+                </article>
+                <article class="story">
+                    <img src="images/ent-main.jpg" alt="Film production in Nigeria">
+                    <div>
+                        <h3>Younger creators continue exploring film, editing, writing, and production careers</h3>
+                        <p>As the industry grows, more students and early professionals are paying attention to behind-the-scenes roles in media and cinema.</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="section-shell page-section" id="technology" data-page="technology">
+            <div class="section-head">
+                <div>
+                    <h2>Technology</h2>
+                    <p>Device markets, digital demand, and the business of everyday technology in Nigeria.</p>
+                </div>
+            </div>
+            <div class="story-list">
+                <article class="story">
+                    <img src="images/tech-main.jpg" alt="Computer Village in Ikeja">
+                    <div>
+                        <h3>Computer Village remains one of the most visible signs of Nigeria's fast-moving digital economy</h3>
+                        <p>Repairers, traders, and customers continue shaping a market where phones, accessories, and technical services meet daily demand.</p>
+                    </div>
+                </article>
+                <article class="story">
+                    <img src="images/tech-2.jpg" alt="Technology market in Lagos">
+                    <div>
+                        <h3>Lagos technology commerce reflects how central devices and connectivity are to daily life</h3>
+                        <p>Students, professionals, and entrepreneurs all rely on growing access to phones, repairs, and digital services.</p>
+                    </div>
+                </article>
+                <article class="story">
+                    <img src="images/home.jpg" alt="Lagos skyline and urban growth">
+                    <div>
+                        <h3>Urban growth and technology use continue to move together in Nigeria's biggest cities</h3>
+                        <p>Observers point to transport apps, digital payments, and connected commerce as signs of how cities are evolving.</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="section-shell page-section" id="full-article" data-page="full-article">
+            <div class="article-layout">
+                <article class="card">
+                    <img src="images/home.jpg" alt="Lagos skyline full article image">
+                    <div class="article-body">
+                        <div class="article-head">
+                            <h2>Full Article</h2>
+                            <p>A closer look at why transport planning remains one of the biggest conversations in Lagos.</p>
+                        </div>
+                        <div class="meta">
+                            <span>By Chiamaka Adeyemi</span>
+                            <span>April 8, 2026</span>
+                            <span>Lagos</span>
+                        </div>
+                        <p>Lagos remains one of Africa's most active urban centres, and that growth continues to shape public conversation around transportation. With more people commuting daily for work, school, and trade, attention is returning to how rail, road, and water transport can better serve residents.</p>
+                        <p>Transport planning now goes beyond traffic relief. It influences business productivity, access to opportunity, safety, and the overall quality of life for millions of residents. That is why every major mobility conversation in Lagos quickly becomes a bigger discussion about the future of city life in Nigeria.</p>
+                        <p>Supporters of expanded rail systems argue that stronger connections could reduce travel time and improve access to important commercial districts. Market traders, office workers, and students all stand to benefit if movement becomes more predictable and affordable.</p>
+                        <p>Experts also note that long-term results will depend on maintenance, affordability, and strong links between rail, bus, and other transport systems. For everyday residents, the real measure of success will be simple: whether the city becomes easier to move through.</p>
+                    </div>
+                </article>
+
+                <aside class="card">
+                    <div class="comment-box">
+                        <div class="article-head">
+                            <h2>Comment Section</h2>
+                            <p>Leave a response to the feature story.</p>
+                        </div>
+                        <form action="#" method="post">
+                            <input type="text" name="comment-name" placeholder="Your name" required>
+                            <input type="email" name="comment-email" placeholder="Your email" required>
+                            <textarea name="comment-message" placeholder="Write your comment here" required></textarea>
+                            <button type="submit">Post Comment</button>
+                        </form>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <section class="section-shell page-section" id="contact" data-page="contact">
+            <div class="section-head">
+                <div>
+                    <h2>Contact</h2>
+                    <p>Send feedback, questions, or story ideas to the editorial team.</p>
+                </div>
+            </div>
+            <div class="article-layout">
+                <div class="card">
+                    <img src="images/politics-3.jpg" alt="Lagos city">
+                </div>
+                <div class="contact-box">
+                    <p>Use this form to share your opinion about the site, submit a school presentation suggestion, or send a topic you want covered.</p>
+                    <form action="#" method="post">
+                        <input type="text" name="name" placeholder="Full name" required>
+                        <input type="email" name="email" placeholder="Email address" required>
+                        <textarea name="message" placeholder="Your message" required></textarea>
+                        <button type="submit">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="shell">
+        <div class="footer-box">
+            <p>&copy; 2026 Naija Daily Report. Built as a single responsive newspaper experience.</p>
+            <div class="footer-nav">
+                <a href="#home" data-page-link="home">Home</a>
+                <a href="#politics" data-page-link="politics">Politics</a>
+                <a href="#sports" data-page-link="sports">Sports</a>
+                <a href="#entertainment" data-page-link="entertainment">Entertainment</a>
+                <a href="#technology" data-page-link="technology">Technology</a>
+                <a href="#contact" data-page-link="contact">Contact</a>
+            </div>
+        </div>
+    </footer>
+    <script>
+        (function () {
+            const sections = Array.from(document.querySelectorAll("[data-page]"));
+            const links = Array.from(document.querySelectorAll("[data-page-link]"));
+            const validPages = new Set(sections.map((section) => section.dataset.page));
+
+            function getPageFromHash() {
+                const hash = window.location.hash.replace("#", "").trim();
+                return hash || "home";
+            }
+
+            function showPage(page) {
+                const target = validPages.has(page) ? page : "home";
+
+                sections.forEach((section) => {
+                    section.classList.toggle("is-active", section.dataset.page === target);
+                });
+
+                links.forEach((link) => {
+                    link.classList.toggle("active", link.dataset.pageLink === target);
+                });
+
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+
+            links.forEach((link) => {
+                link.addEventListener("click", function (event) {
+                    const page = this.dataset.pageLink;
+                    if (!page) return;
+                    event.preventDefault();
+                    history.replaceState(null, "", "#" + page);
+                    showPage(page);
+                });
+            });
+
+            window.addEventListener("hashchange", function () {
+                showPage(getPageFromHash());
+            });
+
+            showPage(getPageFromHash());
+        })();
+    </script>
+</body>
+</html>
